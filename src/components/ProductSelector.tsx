@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Monitor, Headphones, Phone, Wifi, Tv, Desktop } from "lucide-react";
+import { Monitor, Headphones, Phone, Wifi, Tv } from "lucide-react";
 
 interface Product {
   id: string;
@@ -13,7 +13,7 @@ const products: Product[] = [
   { id: "uc-phones", name: "UC Phones", icon: <Phone className="h-8 w-8" /> },
   { id: "ubiquiti", name: "Ubiquiti", icon: <Wifi className="h-8 w-8" /> },
   { id: "commercial-panel", name: "Commercial Panel", icon: <Tv className="h-8 w-8" /> },
-  { id: "brateck", name: "Brateck Modern Work Solutions", icon: <Desktop className="h-8 w-8" /> },
+  { id: "brateck", name: "Brateck Modern Work Solutions", icon: <Monitor className="h-8 w-8" /> },
 ];
 
 interface ProductSelectorProps {
