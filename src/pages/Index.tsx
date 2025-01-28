@@ -3,6 +3,8 @@ import { Card } from "@/components/ui/card";
 import ProductSelector from "@/components/ProductSelector";
 import LocationSelector from "@/components/LocationSelector";
 import TeamSelector from "@/components/TeamSelector";
+import BookingCalendar from "@/components/BookingCalendar";
+import BookingSummary from "@/components/BookingSummary";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -12,6 +14,8 @@ const Index = () => {
   const [selectedState, setSelectedState] = useState("");
   const [selectedAM, setSelectedAM] = useState("");
   const [selectedBDM, setSelectedBDM] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleNext = () => {
@@ -36,11 +40,30 @@ const Index = () => {
       });
       return;
     }
+    if (step === 4 && (!selectedDate || !selectedTime)) {
+      toast({
+        title: "Please select a date and time",
+        variant: "destructive",
+      });
+      return;
+    }
     setStep(step + 1);
   };
 
   const handleBack = () => {
     setStep(step - 1);
+  };
+
+  const getProductName = (id: string) => {
+    const products: { [key: string]: string } = {
+      "uc-video": "UC Video & Collab",
+      "uc-headset": "UC Headset",
+      "uc-phones": "UC Phones",
+      "ubiquiti": "Ubiquiti",
+      "commercial-panel": "Commercial Panel",
+      "brateck": "Brateck Modern Work Solutions",
+    };
+    return products[id] || id;
   };
 
   return (
@@ -59,7 +82,7 @@ const Index = () => {
 
             <div className="flex justify-center mb-8">
               <div className="flex items-center space-x-4">
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
                     className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -111,13 +134,34 @@ const Index = () => {
                 </div>
               )}
 
+              {step === 4 && (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-semibold mb-4">Select Date & Time</h2>
+                  <BookingCalendar
+                    selectedDate={selectedDate}
+                    onSelectDate={setSelectedDate}
+                    selectedTime={selectedTime}
+                    onSelectTime={setSelectedTime}
+                  />
+                </div>
+              )}
+
+              <BookingSummary
+                product={getProductName(selectedProduct)}
+                state={selectedState}
+                accountManager={selectedAM}
+                bdm={selectedBDM}
+                date={selectedDate}
+                time={selectedTime}
+              />
+
               <div className="flex justify-between pt-6">
                 {step > 1 && (
                   <Button variant="outline" onClick={handleBack}>
                     Back
                   </Button>
                 )}
-                {step < 3 ? (
+                {step < 4 ? (
                   <Button className="ml-auto" onClick={handleNext}>
                     Next
                   </Button>
@@ -126,12 +170,12 @@ const Index = () => {
                     className="ml-auto"
                     onClick={() => {
                       toast({
-                        title: "Coming Soon!",
-                        description: "Calendar integration will be available soon.",
+                        title: "Booking Confirmed!",
+                        description: "You will receive a confirmation email shortly.",
                       });
                     }}
                   >
-                    View Available Times
+                    Confirm Booking
                   </Button>
                 )}
               </div>
